@@ -1,6 +1,5 @@
 ﻿using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows;
 using System.Windows.Controls;
 namespace graphs
 {
@@ -26,7 +25,6 @@ namespace graphs
             IsBtnDeleteTopClick = State.First;
             IsBtnDeleteConnectionClick = State.First;
             IsBtnAddConnectionClick = State.First;
-
-        } 
+        }
     }
 }

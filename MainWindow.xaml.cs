@@ -12,14 +12,26 @@ namespace graphs
         public MainWindow()
         {
             InitializeComponent();
+            ActiveButtons();
         }
 
         private Controler controler = new Controler();
         private Graph graph = new Graph();
 
 
+        private void ActiveButtons()
+        {
+            int counter_tops = graph.GetConntTops();
+            int counter_connections = graph.GetConntConnections();
+            btn_delete_top.IsEnabled = counter_tops >= 1;
+            btn_add_connection.IsEnabled = counter_tops >= 2;
+            btn_delete_connection.IsEnabled = counter_connections >= 1;
+            BtnGetСColumn.IsEnabled = counter_connections >= 1;
+            BtnGetMatrix.IsEnabled = counter_connections >= 1;
+        }
         private void Grid_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
+
             if (controler.IsBtnAddTopClick == Controler.State.Second)
             {
                 Point upPoint = e.GetPosition(grid);
@@ -40,7 +52,8 @@ namespace graphs
                 };
                 button.PreviewMouseDown += BtnTopMouseLeftButtonDown;
                 grid.Children.Add(button);
-                graph.AddTop(button);   
+                graph.AddTop(button);
+                ActiveButtons();
                 controler.ClearInfo();
             }
 
@@ -48,12 +61,12 @@ namespace graphs
 
         private void BtnTopMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
             if (controler.IsBtnDeleteTopClick == Controler.State.Second)
             {
                 graph.RemoveTop(sender as Button);
                 grid.Children.Remove(sender as Button);
                 controler.ClearInfo();
+                ActiveButtons();
             }
 
             else if (controler.IsBtnAddConnectionClick == Controler.State.Second)
@@ -89,35 +102,40 @@ namespace graphs
                 if(e.RightButton == MouseButtonState.Pressed) 
                     (sender as Button).Content = e.ClickCount == 1 ? ((int)(sender as Button).Content - 1) : ((int)(sender as Button).Content - 10);
             }
-
+             ActiveButtons();
         }
 
         private void Btn_add_top_Click(object sender, RoutedEventArgs e)
         {
+            ActiveButtons();
             controler.ClearInfo();
             controler.IsBtnAddTopClick = Controler.State.Second;
         }   
 
         private void Btn_delete_top_Click(object sender, RoutedEventArgs e)
         {
+            ActiveButtons();
             controler.ClearInfo();
             controler.IsBtnDeleteTopClick = Controler.State.Second;
         }
 
         private void Btn_delete_connection_Click(object sender, RoutedEventArgs e)
         {
+            ActiveButtons();
             controler.ClearInfo();
             controler.IsBtnDeleteConnectionClick = Controler.State.Second;
         }
 
         private void Btn_add_connection_Click(object sender, RoutedEventArgs e)
         {
+            ActiveButtons();
             controler.ClearInfo();
             controler.IsBtnAddConnectionClick = Controler.State.Second;
         }
 
         private void BtnGetMatrixClick(object sender, RoutedEventArgs e)
         {
+            ActiveButtons();
             controler.ClearInfo();
             string matrix_string = graph.GetMatrix();
             MessageBoxResult result = MessageBox.Show(matrix_string, "Скопировать в буфер обмена?", MessageBoxButton.YesNo);
@@ -127,6 +145,7 @@ namespace graphs
 
         private void BtnGetСColumnClick(object sender, RoutedEventArgs e)
         {
+            ActiveButtons();
             controler.ClearInfo();
             string column_string = graph.GetColumn();
             MessageBoxResult result = MessageBox.Show(column_string, "Скопировать в буфер обмена?", MessageBoxButton.YesNo);

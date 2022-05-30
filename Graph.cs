@@ -15,6 +15,8 @@ namespace graphs
             Connections = new HashSet<(Button, Button)>();
         }
 
+        public int GetConntTops() => Tops.Count;
+        public int GetConntConnections() => Connections.Count;
         public void AddTop(Button button) => Tops.Add(button);
 
         public void AddConnection(Button button_1, Button button_2)
