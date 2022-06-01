@@ -1,7 +1,9 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace graphs
 {
@@ -12,7 +14,7 @@ namespace graphs
         public MainWindow()
         {
             InitializeComponent();
-            ActiveButtons();
+            ActiveButtons();           
         }
 
         private Controler controler = new Controler();
@@ -66,7 +68,6 @@ namespace graphs
                 graph.RemoveTop(sender as Button);
                 grid.Children.Remove(sender as Button);
                 controler.ClearInfo();
-                ActiveButtons();
             }
 
             else if (controler.IsBtnAddConnectionClick == Controler.State.Second)
@@ -78,8 +79,25 @@ namespace graphs
             else if (controler.IsBtnAddConnectionClick == Controler.State.Third)
             {
                 graph.AddConnection(button, sender as Button);
-                button = null;
+               
                 controler.IsBtnAddConnectionClick = Controler.State.First;
+
+                Line line = new Line
+                {
+                    X1 = button.Margin.Left + 10,
+                    Y1 = button.Margin.Top + 10,
+                    X2 = (sender as Button).Margin.Left + 20,
+                    Y2 = (sender as Button).Margin.Top + 20,
+                    StrokeThickness = 5,
+                    Stroke = Brushes.Brown,
+                };
+                grid.Children.Add(line);
+                grid.Children.Remove(button);
+                grid.Children.Remove(sender as Button);
+                grid.Children.Add(button);
+                grid.Children.Add(sender as Button);
+                button = null;
+
             }
 
             else if (controler.IsBtnDeleteConnectionClick == Controler.State.Second)
@@ -107,35 +125,38 @@ namespace graphs
 
         private void Btn_add_top_Click(object sender, RoutedEventArgs e)
         {
-            ActiveButtons();
             controler.ClearInfo();
             controler.IsBtnAddTopClick = Controler.State.Second;
         }   
 
         private void Btn_delete_top_Click(object sender, RoutedEventArgs e)
         {
-            ActiveButtons();
+            //foreach (var t in grid.Children)
+            //{
+            //    if (t is Button)
+            //    {
+            //        (t as Button).Background = Brushes.Black;
+            //        System.Threading.Thread.Sleep(500);
+            //    }
+            //}
             controler.ClearInfo();
             controler.IsBtnDeleteTopClick = Controler.State.Second;
         }
 
         private void Btn_delete_connection_Click(object sender, RoutedEventArgs e)
         {
-            ActiveButtons();
             controler.ClearInfo();
             controler.IsBtnDeleteConnectionClick = Controler.State.Second;
         }
 
         private void Btn_add_connection_Click(object sender, RoutedEventArgs e)
         {
-            ActiveButtons();
             controler.ClearInfo();
             controler.IsBtnAddConnectionClick = Controler.State.Second;
         }
 
         private void BtnGetMatrixClick(object sender, RoutedEventArgs e)
         {
-            ActiveButtons();
             controler.ClearInfo();
             string matrix_string = graph.GetMatrix();
             MessageBoxResult result = MessageBox.Show(matrix_string, "Скопировать в буфер обмена?", MessageBoxButton.YesNo);
@@ -145,7 +166,6 @@ namespace graphs
 
         private void BtnGetСColumnClick(object sender, RoutedEventArgs e)
         {
-            ActiveButtons();
             controler.ClearInfo();
             string column_string = graph.GetColumn();
             MessageBoxResult result = MessageBox.Show(column_string, "Скопировать в буфер обмена?", MessageBoxButton.YesNo);
@@ -153,6 +173,14 @@ namespace graphs
                 Clipboard.SetText(column_string);
         }
 
+        private void BFS_Click(object sender, RoutedEventArgs e)
+        {
+            graph.DFS(graph.GetTop());
+            string s = "";
+            graph.paths.ForEach(x => s += $"{x} ");
+            MessageBox.Show(s);
+            graph.paths.Clear();
+        }
     }
 }
 
