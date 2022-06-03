@@ -4,17 +4,33 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Graphs" Height="550" Width="900" ResizeMode="CanResize" WindowStartupLocation="CenterScreen">
-    <Grid Name="grid" Background="#FF646464" Margin="0,-16,0,-33" Width="900" Height="550" PreviewMouseDown="Grid_PreviewMouseUp" >
-        <Button x:Name="btn_add_top" Content="Добавить вершину" FontSize="12" Margin="28,69,612,401" Background="#FF8232E5" Height="30" Foreground="#DD111010" BorderBrush="#FF8232E5" Click="Btn_add_top_Click" Width="150" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <Button x:Name="btn_delete_top" Content="Удалить вершину" FontSize="12" Margin="28,250,612,220" Background="#FFD93A62" Height="30" Foreground="#DD111010" Width="150" Click="Btn_delete_top_Click" HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="Hand"/>
-        <Button x:Name="btn_add_connection" Content="Добавить связь" FontSize="12" Margin="28,127,612,343" Background="#FF8232E5" Height="30" Foreground="#DD111010" HorizontalAlignment="Left" BorderBrush="#FF8232E5" Click="Btn_add_connection_Click" Width="150" VerticalAlignment="Top"/>
-        <Button x:Name="btn_delete_connection" Content="Удалить связь" FontSize="12" Margin="28,182,612,286" Background="#FFD93A62" Foreground="#DD111010" Height="30" Width="150" Click="Btn_delete_connection_Click" HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="Hand"/>
-        <Button x:Name="BtnGetMatrix" Content="Получить матрицу&#xA;смежности" FontSize="12" Margin="28,305,0,0" Background="#FFF3DC07" Foreground="#DD111010"  Cursor="Hand" RenderTransformOrigin="0.495,0.27" HorizontalAlignment="Left" VerticalAlignment="Top" Height="55" Width="150" Click="BtnGetMatrixClick"/>
-        <Button x:Name="BtnGetСColumn" Content="Получить столбец&#xA;смежности" FontSize="12" Margin="28,386,0,0" Background="#FFF3DC07" Foreground="#DD111010"  Cursor="Hand" RenderTransformOrigin="0.495,0.27" HorizontalAlignment="Left" VerticalAlignment="Top" Height="55" Width="150" Click="BtnGetСColumnClick"/>
-        <Button x:Name="BFS" Content="Обход" HorizontalAlignment="Left" Margin="622,77,0,0" VerticalAlignment="Top" Click="BFS_Click"/>
-        <Grid x:Name="Grid_2">
-        </Grid>
+        Title="Graphs" Height="556" Width="898" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style TargetType="Button" x:Key="ForRadius">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="40"
+                                Background="{TemplateBinding Background}">
+
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid Name="grid" Background="#FF646464" Margin="0,-16,0,-33" Width="900" Height="550" PreviewMouseDown="GridPreviewMouseUp" >
+        <Button x:Name="btn_add_top" BorderThickness="2.5" Content="Добавить вершину" Style="{StaticResource MaterialDesignFlatAccentBgButton}" FontSize="10" Margin="28,60,612,400" Background="#FF8232E5" Height="27" Foreground="#DD111010" BorderBrush="#FF8232E5" Click="BtnAddTopClick" Width="135" HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="Hand"/>
+        <Button x:Name="btn_add_connection" BorderThickness="2.5" Content="Добавить связь" FontSize="10" Margin="28,110,0,0" Background="#FF8232E5" Height="27" Foreground="#DD111010" HorizontalAlignment="Left" BorderBrush="#FF8232E5" Click="BtnAddConnectionClick" Width="135" VerticalAlignment="Top"/>
+        <Button x:Name="btn_delete_connection" BorderThickness="2.5" Content="Удалить связь" FontSize="10" Margin="28,165,0,0" Background="#FFD93A62" Foreground="#DD111010" Height="27" Width="130" Click="BtnDeleteConnectionClick" HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="Hand" BorderBrush="#FFD93A62" />
+        <Button x:Name="btn_delete_top" BorderThickness="2.5" Content="Удалить вершину" FontSize="10" Margin="28,219,0,0" Background="#FFD93A62" Height="27" Foreground="#DD111010" Width="135" Click="BtnDeleteTopClick" HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="Hand" BorderBrush="#FFD93A62"/>
+        <Button x:Name="BtnGetMatrix" Content="Получить матрицу&#xA;смежности" FontSize="10" Margin="28,275,0,0" Background="#FFF3DC07" Foreground="#DD111010"  Cursor="Hand" RenderTransformOrigin="0.495,0.27" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" Width="135" Click="BtnGetMatrixClick"/>
+        <Button x:Name="BtnGetСColumn" Content="Получить столбец&#xA;смежности" FontSize="10" Margin="28,344,0,0" Background="#FFF3DC07" Foreground="#DD111010"  Cursor="Hand" RenderTransformOrigin="0.495,0.27" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" Width="135" Click="BtnGetСColumnClick"/>
+        <Button x:Name="BFS" Content="Обход в глубину" FontSize="10" HorizontalAlignment="Left" Margin="28,411,0,0" VerticalAlignment="Top"  Foreground="#DD111010" Click="DFSClick" RenderTransformOrigin="0.582,0.529" Width="135" Height="27" Background="#FF29A14B" BorderBrush="#FF29A14B" />
+        <Button x:Name="Help" Content="Помощь" Foreground="#DD111010" Margin="725,479,40,44" Width="135" Height="27" Background="#FF2920DA" FontSize="10" Click="HelpClick" Cursor="Hand"/>
+        <Button x:Name="DeleteAll" Content="Удалить граф" FontSize="10" HorizontalAlignment="Left" Margin="28,466,0,0" VerticalAlignment="Top"  Foreground="#DD111010" RenderTransformOrigin="0.582,0.529" Width="135" Height="26" Background="#FFE22A1C" BorderBrush="#FFE22A1C" Click="DeleteAllClick" />
     </Grid>
-    
+
 </Window>

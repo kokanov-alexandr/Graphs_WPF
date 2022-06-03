@@ -21,3 +21,5 @@ C:\Users\HP\source\repos\graphs\graphs\bin\Debug\MaterialDesignThemes.Wpf.pdb
 C:\Users\HP\source\repos\graphs\graphs\bin\Debug\MaterialDesignThemes.Wpf.xml
 C:\Users\HP\source\repos\graphs\graphs\obj\Debug\App.baml
 C:\Users\HP\source\repos\graphs\graphs\obj\Debug\graphs.csproj.CopyComplete
+C:\Users\HP\source\repos\graphs\graphs\obj\Debug\Help.g.cs
+C:\Users\HP\source\repos\graphs\graphs\obj\Debug\Help.baml

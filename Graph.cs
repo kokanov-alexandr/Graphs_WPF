@@ -1,62 +1,95 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
-using System.Windows.Media;
+using System.Windows.Shapes;
+
 namespace graphs
 {
+    public struct Connection
+    {
+        public Button button_1;
+        public Button button_2;
+        public Line line;
+
+        public Connection(Button button_1, Button button_2, Line line)
+        {
+            this.button_1 = button_1;
+            this.button_2 = button_2;
+            this.line = line;
+        }
+    }
     public class Graph
     {
-        private List<Button> Tops;
-        private HashSet<(Button, Button)> Connections;
-        
-        public List<int> paths;
+        public List<Button> Tops;
+
+        public List<Connection> Connections;
+
+        private Dictionary<Button, int> Indexes;
+
+        public List<Button> Paths;
+
+        private List<List<int>> Table;
+
+        private List<bool> Used;
+
         public Graph()
         {
             Tops = new List<Button>();
-            Connections = new HashSet<(Button, Button)>();
-            paths = new List<int>();
+
+            Connections = new List<Connection>();
         }
 
-        public int GetConntTops() => Tops.Count;
-        public Button GetTop() => Tops[0];
-        public int GetConntConnections() => Connections.Count;
-        public void AddTop(Button button) => Tops.Add(button);
 
-        public void AddConnection(Button button_1, Button button_2)
+        public void AddConnection(Button button_1, Button button_2, Line line)
         {
-            if (Connections.Any(x => x.Item2 == button_1 && x.Item1 == button_2))
+            if (Connections.Any(x => x.button_2 == button_1 && x.button_1 == button_2 || x.button_1 == button_1 && x.button_2 == button_2))
                 return;
-            Connections.Add((button_1, button_2));
+            Connections.Add(new Connection(button_1, button_2, line));
         }
-            
             
         public void RemoveTop(Button button)
         {
             Tops.Remove(button);
-            Connections = Connections.Where(x => x.Item1 != button && x.Item2 != button).ToHashSet();
+            var ConnecCopy = Connections.ToList();
+            for (int i = 0; i < ConnecCopy.Count; i++)
+            {
+                if (ConnecCopy[i].button_1 == button || ConnecCopy[i].button_2 == button)
+                {
+                    Connections.Remove(ConnecCopy[i]);
+                    ((MainWindow)System.Windows.Application.Current.MainWindow).grid.Children.Remove(ConnecCopy[i].line);
+                }
+            }
         }
             
-        public void RemoveCConnection(Button button_1, Button button_2) => 
-            Connections.RemoveWhere(x => x.Item1 == button_1 && x.Item2 == button_2 || x.Item1 == button_2 && x.Item2 == button_1);
+        public void RemoveConnection(Button button_1, Button button_2)
+        {
+            var ConnecCopy = Connections.ToList();
+            for (int i = 0; i < ConnecCopy.Count; i++)
+            {
+                if (ConnecCopy[i].button_1 == button_1 && ConnecCopy[i].button_2 == button_2 || ConnecCopy[i].button_1 == button_2 && ConnecCopy[i].button_2 == button_1)
+                {
+                    Connections.Remove(ConnecCopy[i]);
+                    ((MainWindow)System.Windows.Application.Current.MainWindow).grid.Children.Remove(ConnecCopy[i].line);
+                }
+            }
+        }
 
         public string GetMatrix()
         {
-            if (Tops.Count == 0)
-                return string.Empty;
-
             var matrix = new int[Tops.Count + 1, Tops.Count + 1];
+
             string string_matrix = "0 ";
 
             Tops.ForEach(x => string_matrix += $"{x.Content} ");
 
             string_matrix += '\n';
+
             foreach (var point in Connections)
             {
-                matrix[Tops.FindIndex(x => x == point.Item1), Tops.FindIndex(x => x == point.Item2)] = 1;
-                matrix[Tops.FindIndex(x => x == point.Item2), Tops.FindIndex(x => x == point.Item1)] = 1;
+                matrix[Tops.FindIndex(x => x == point.button_1), Tops.FindIndex(x => x == point.button_2)] = 1;
+                matrix[Tops.FindIndex(x => x == point.button_2), Tops.FindIndex(x => x == point.button_1)] = 1;
             }
+
             for (int i = 0; i < Tops.Count; i++)
             {
                 string_matrix += $"{Tops[i].Content} ";
@@ -71,56 +104,61 @@ namespace graphs
         public string GetColumn()
         {
             string column = "";
-            Connections.ToList().ForEach(x => column += $"{x.Item1.Content} {x.Item2.Content}\n");                
+            Connections.ToList().ForEach(x => column += $"{x.button_1.Content} {x.button_2.Content}\n");
             return column;
         }
 
-
-        public void dfs(int index_top, ref List<bool> used, ref List<List<int>> table)
+        public void InitBaseDFS()
         {
-            Dictionary<Button, int> indexes = new Dictionary<Button, int>();
-            var top = Tops[index_top];
-            top.Background = Brushes.Black;
-            System.Threading.Thread.Sleep(1000);
-            paths.Add((int)top.Content);
-            for (int i = 0; i < Tops.Count; i++)
-                indexes[Tops[i]] = i;
+            Paths = new List<Button>();
 
-            used[indexes[top]] = true;
-            for (int i = 0; i < table[indexes[top]].Count; i++)
-            {
-                if (!used[table[indexes[top]][i]])
-                {
-                    dfs(table[indexes[top]][i], ref used, ref table);
-                    paths.Add((int)top.Content);
-                }
-            }
-        }
-        public void DFS(Button top)
-        {
-
-            List<bool> used = new List<bool>(Tops.Count);
-            for (int i = 0; i < Tops.Count; i++)
-                used.Add(false);
-
-            List<List<int>> table = new List<List<int>>();
+            Indexes = new Dictionary<Button, int>();
 
             for (int i = 0; i < Tops.Count; i++)
-            {
-                table.Add(new List<int>());
-            }
+                Indexes[Tops[i]] = i;
 
-            Dictionary<Button, int> indexes = new Dictionary<Button, int>();
+            Table = new List<List<int>>();
 
             for (int i = 0; i < Tops.Count; i++)
-                indexes[Tops[i]] = i;
+                Table.Add(new List<int>());
 
             foreach (var v in Connections)
             {
-                table[indexes[v.Item1]].Add(indexes[v.Item2]);
-                table[indexes[v.Item2]].Add(indexes[v.Item1]);
+                Table[Indexes[v.button_1]].Add(Indexes[v.button_2]);
+                Table[Indexes[v.button_2]].Add(Indexes[v.button_1]);
             }
-            dfs(indexes[top], ref used, ref table);
+
+            Used = new List<bool>();
+
+            foreach (var v in Tops)
+                Used.Add(false);
+        }
+
+        public void ClearBaseDFS()
+        {
+            Paths.Clear();
+
+            Indexes.Clear();
+
+            Table.Clear();
+
+            Used.Clear();
+        }
+
+        public void Dfs(Button top)
+        {
+
+            if (!Used[Indexes[top]])
+                Paths.Add(top);
+            Used[Indexes[top]] = true;
+
+            for (int i = 0; i < Table[Indexes[top]].Count; i++)
+            {
+                if (!Used[Table[Indexes[top]][i]])
+                {
+                    Dfs(Tops[Table[Indexes[top]][i]]);
+                }
+            }
         }
     }
 }
