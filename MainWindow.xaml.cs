@@ -4,21 +4,21 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace graphs
 {
-
     public partial class MainWindow : Window
     {
         private Button button;
-        private DispatcherTimer timer;
+        private readonly DispatcherTimer timer;
 
         public MainWindow()
         {
             InitializeComponent();
             ActiveButtons();
+            timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 0, 1) };
+            timer.Tick += TimerTick;
         }
         private Controller controler = new Controller();
         private Graph graph = new Graph();
@@ -29,7 +29,7 @@ namespace graphs
             int counter_tops = graph.Tops.Count;
             int counter_connections = graph.Connections.Count;
             btn_delete_top.IsEnabled = counter_tops > 0;
-            btn_add_connection.IsEnabled = counter_tops >= 2;
+            btn_add_connection.IsEnabled = counter_tops > 0;
             btn_delete_connection.IsEnabled = counter_connections > 0;
             BtnGetСColumn.IsEnabled = counter_connections > 0;
             BtnGetMatrix.IsEnabled = counter_connections > 0;
@@ -46,23 +46,9 @@ namespace graphs
                    upPoint.Y < 0 || upPoint.Y > grid.ActualHeight || upPoint.X > Constants.HelpButtonBorderX && upPoint.Y > Constants.HelpButtonBorderY)
                     return;
 
-                Button button = new Button
-                {
-                    Margin = new Thickness(upPoint.X - Constants.TopSize / 2, upPoint.Y - Constants.TopSize / 2, 0, 0),
-                    VerticalAlignment = VerticalAlignment.Top,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    Background = new SolidColorBrush(Colors.Blue),
-                    Content = graph.Tops.Count + 1,
-                    Width = Constants.TopSize,
-                    Height = Constants.TopSize,
-                    FontSize = Constants.TopFontSize,
-                    Foreground = new SolidColorBrush(Colors.Black),
-                    FontStretch = new FontStretch(),
-                    Style = (Style)Resources["ForRadius"]
-                };  
-                button.PreviewMouseDown += TopMouseLeftButtonDown;
-                grid.Children.Add(button);
-                graph.Tops.Add(button);
+                Button NewTop =  CreateMyElements.CreateButton(new Point(upPoint.X - Constants.TopSize / 2, upPoint.Y - Constants.TopSize / 2));
+                NewTop.PreviewMouseDown += TopMouseLeftButtonDown;
+                graph.AddTop(NewTop);
                 ActiveButtons();
             }
 
@@ -70,11 +56,10 @@ namespace graphs
 
         private void TopMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-           
+            
             if (controler.IsBtnDeleteTopClick == Controller.State.Active)
             {
                 graph.RemoveTop(sender as Button);
-                grid.Children.Remove(sender as Button);
             }
 
             else if (controler.IsBtnAddConnectionClick == Controller.State.Active)
@@ -85,27 +70,9 @@ namespace graphs
 
             else if (controler.IsBtnAddConnectionClick == Controller.State.Active_2)
             {
-               
+                graph.AddConnection(button, sender as Button);
                 controler.IsBtnAddConnectionClick = Controller.State.Active;
-
-                Line line = new Line
-                {
-                    X1 = button.Margin.Left + Constants.TopSize / 2,
-                    Y1 = button.Margin.Top + Constants.TopSize / 2,
-                    X2 = (sender as Button).Margin.Left + Constants.TopSize / 2,
-                    Y2 = (sender as Button).Margin.Top + Constants.TopSize / 2,
-                    StrokeThickness = Constants.LineThickness,
-                    Stroke = Brushes.Black,
-                };
-                grid.Children.Add(line);
-                graph.AddConnection(button, sender as Button, line);
-
-                grid.Children.Remove(button);
-                grid.Children.Add(button);
-                grid.Children.Remove(sender as Button);
-                grid.Children.Add(sender as Button);    
                 button = null;
-
             }
 
             else if (controler.IsBtnDeleteConnectionClick == Controller.State.Active)
@@ -123,11 +90,9 @@ namespace graphs
                 
             else if (controler.IsDFSBtnClick == Controller.State.Active)
             {
+                controler.IsDFSBtnClick = Controller.State.Inactive;
                 graph.InitBaseDFS();
                 graph.Dfs(sender as Button);
-                controler.IsDFSBtnClick = Controller.State.Inactive;
-                timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 0, 1) };
-                timer.Tick += TimerTick;
                 timer.Start();  
             }
             else
@@ -148,7 +113,6 @@ namespace graphs
                 foreach (var path in graph.Paths) 
                     path.Background = Brushes.Blue;
                 increment = 0;
-                graph.ClearBaseDFS();
                 timer.Stop();
                 return;
             }
@@ -160,7 +124,7 @@ namespace graphs
             {
                 graph.Paths[increment].Background = Brushes.DarkOrange;
                 if (increment > 0)
-                    graph.Paths[increment - 1].Background = Brushes.Gray;
+                    graph.Paths[increment - 1].Background = Brushes.LightCoral;
             }
 
             increment++;   
@@ -221,7 +185,7 @@ namespace graphs
                 return;
             graph.Tops.ForEach(x => grid.Children.Remove(x));
             graph.Tops.Clear();
-            graph.Connections.ToList().ForEach(x => grid.Children.Remove(x.line));
+            graph.Connections.ToList().ForEach(x => grid.Children.Remove(x.figure));
             graph.Connections.Clear();
             ActiveButtons();
         }

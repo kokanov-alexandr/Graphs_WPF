@@ -21,7 +21,7 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Grid Name="grid" Background="#FF646464" Margin="0,-16,0,-33" Width="900" Height="550" PreviewMouseDown="GridPreviewMouseUp" >
+    <Grid Name="grid" Background="Gray" Margin="0,-16,0,-33" Width="900" Height="550" PreviewMouseDown="GridPreviewMouseUp" >
         <Button x:Name="btn_add_top" BorderThickness="2.5" Content="Добавить вершину" Style="{StaticResource MaterialDesignFlatAccentBgButton}" FontSize="10" Margin="28,60,612,400" Background="#FF8232E5" Height="27" Foreground="#DD111010" BorderBrush="#FF8232E5" Click="BtnAddTopClick" Width="135" HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="Hand"/>
         <Button x:Name="btn_add_connection" BorderThickness="2.5" Content="Добавить связь" FontSize="10" Margin="28,110,0,0" Background="#FF8232E5" Height="27" Foreground="#DD111010" HorizontalAlignment="Left" BorderBrush="#FF8232E5" Click="BtnAddConnectionClick" Width="135" VerticalAlignment="Top"/>
         <Button x:Name="btn_delete_connection" BorderThickness="2.5" Content="Удалить связь" FontSize="10" Margin="28,165,0,0" Background="#FFD93A62" Foreground="#DD111010" Height="27" Width="130" Click="BtnDeleteConnectionClick" HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="Hand" BorderBrush="#FFD93A62" />

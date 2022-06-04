@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 
@@ -9,13 +10,13 @@ namespace graphs
     {
         public Button button_1;
         public Button button_2;
-        public Line line;
+        public Shape figure;
 
-        public Connection(Button button_1, Button button_2, Line line)
+        public Connection(Button button_1, Button button_2, Shape figure)
         {
             this.button_1 = button_1;
             this.button_2 = button_2;
-            this.line = line;
+            this.figure = figure;
         }
     }
     public class Graph
@@ -35,16 +36,38 @@ namespace graphs
         public Graph()
         {
             Tops = new List<Button>();
-
             Connections = new List<Connection>();
         }
 
-
-        public void AddConnection(Button button_1, Button button_2, Line line)
+        public void AddTop(Button button)
         {
+            ((MainWindow)Application.Current.MainWindow).grid.Children.Add(button);
+            Tops.Add(button);
+        }
+
+        public void AddConnection(Button button_1, Button button_2)
+        {
+            var grid = ((MainWindow)Application.Current.MainWindow).grid;
             if (Connections.Any(x => x.button_2 == button_1 && x.button_1 == button_2 || x.button_1 == button_1 && x.button_2 == button_2))
                 return;
-            Connections.Add(new Connection(button_1, button_2, line));
+
+            Shape NewFigure;
+
+            if (button_1 == button_2)
+            {
+                NewFigure = CreateMyElements.CreateEllipse(new Point(button_1.Margin.Left + Constants.TopSize / 2, button_1.Margin.Top));     
+            }
+            else
+            {
+                NewFigure = CreateMyElements.CreateLine(new Point(button_1.Margin.Left + Constants.TopSize / 2, button_1.Margin.Top + Constants.TopSize / 2),
+                    new Point(button_2.Margin.Left + Constants.TopSize / 2, button_2.Margin.Top + Constants.TopSize / 2));
+            }
+            grid.Children.Add(NewFigure);
+            Connections.Add(new Connection(button_1, button_2, NewFigure));
+            grid.Children.Remove(button_1);
+            grid.Children.Add(button_1);
+            grid.Children.Remove(button_2);
+            grid.Children.Add(button_2);
         }
             
         public void RemoveTop(Button button)
@@ -56,9 +79,10 @@ namespace graphs
                 if (ConnecCopy[i].button_1 == button || ConnecCopy[i].button_2 == button)
                 {
                     Connections.Remove(ConnecCopy[i]);
-                    ((MainWindow)System.Windows.Application.Current.MainWindow).grid.Children.Remove(ConnecCopy[i].line);
+                    ((MainWindow)Application.Current.MainWindow).grid.Children.Remove(ConnecCopy[i].figure);
                 }
             }
+            ((MainWindow)Application.Current.MainWindow).grid.Children.Remove(button);
         }
             
         public void RemoveConnection(Button button_1, Button button_2)
@@ -69,7 +93,7 @@ namespace graphs
                 if (ConnecCopy[i].button_1 == button_1 && ConnecCopy[i].button_2 == button_2 || ConnecCopy[i].button_1 == button_2 && ConnecCopy[i].button_2 == button_1)
                 {
                     Connections.Remove(ConnecCopy[i]);
-                    ((MainWindow)System.Windows.Application.Current.MainWindow).grid.Children.Remove(ConnecCopy[i].line);
+                    ((MainWindow)Application.Current.MainWindow).grid.Children.Remove(ConnecCopy[i].figure);
                 }
             }
         }
@@ -84,15 +108,16 @@ namespace graphs
 
             string_matrix += '\n';
 
+
             foreach (var point in Connections)
             {
                 matrix[Tops.FindIndex(x => x == point.button_1), Tops.FindIndex(x => x == point.button_2)] = 1;
                 matrix[Tops.FindIndex(x => x == point.button_2), Tops.FindIndex(x => x == point.button_1)] = 1;
             }
-
             for (int i = 0; i < Tops.Count; i++)
             {
                 string_matrix += $"{Tops[i].Content} ";
+
                 for (int j = 0; j < Tops.Count; j++)
                     string_matrix += $"{matrix[i, j]} ";
 
@@ -132,17 +157,6 @@ namespace graphs
 
             foreach (var v in Tops)
                 Used.Add(false);
-        }
-
-        public void ClearBaseDFS()
-        {
-            Paths.Clear();
-
-            Indexes.Clear();
-
-            Table.Clear();
-
-            Used.Clear();
         }
 
         public void Dfs(Button top)

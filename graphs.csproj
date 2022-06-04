@@ -77,6 +77,7 @@
     </Compile>
     <Compile Include="Constants.cs" />
     <Compile Include="Controller.cs" />
+    <Compile Include="CreateMyElements.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="Help.xaml.cs">
       <DependentUpon>Help.xaml</DependentUpon>

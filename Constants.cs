@@ -8,5 +8,6 @@
         public const int MenuBorder = 200;
         public const int HelpButtonBorderX = 680;
         public const int HelpButtonBorderY = 430;
+        public const int CountMenuButtons = 9;
     }
 }
