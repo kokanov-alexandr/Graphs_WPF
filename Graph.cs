@@ -64,10 +64,6 @@ namespace graphs
             }
             grid.Children.Add(NewFigure);
             Connections.Add(new Connection(button_1, button_2, NewFigure));
-            grid.Children.Remove(button_1);
-            grid.Children.Add(button_1);
-            grid.Children.Remove(button_2);
-            grid.Children.Add(button_2);
         }
             
         public void RemoveTop(Button button)
@@ -133,7 +129,7 @@ namespace graphs
             return column;
         }
 
-        public void InitBaseDFS()
+        public void InitBaseSearch()
         {
             Paths = new List<Button>();
 
@@ -161,18 +157,48 @@ namespace graphs
 
         public void Dfs(Button top)
         {
-
-            if (!Used[Indexes[top]])
-                Paths.Add(top);
+            InitBaseSearch();
+            var stack = new Stack<Button>();
+                
             Used[Indexes[top]] = true;
-
-            for (int i = 0; i < Table[Indexes[top]].Count; i++)
+            stack.Push(top);
+            while (stack.Count > 0)
             {
-                if (!Used[Table[Indexes[top]][i]])
+                var y = stack.Pop();
+                Paths.Add(y);
+                for (int i = 0; i < Table[Indexes[y]].Count; i++)
                 {
-                    Dfs(Tops[Table[Indexes[top]][i]]);
+                    if (!Used[Table[Indexes[y]][i]])
+                    {
+                        Used[Table[Indexes[y]][i]] = true;
+                        stack.Push(Tops[Table[Indexes[y]][i]]);
+                    }
                 }
             }
         }
+
+        public void Bfs(Button top)
+        {
+            InitBaseSearch();
+            var queue = new Queue<Button>();
+
+            Paths.Add(top);
+            Used[Indexes[top]] = true;
+            queue.Enqueue(top);
+            while (queue.Count > 0)
+            {
+                var y = queue.Dequeue();
+                for (int i = 0; i < Table[Indexes[y]].Count; i++)
+                {
+                    if (!Used[Table[Indexes[y]][i]])
+                    {
+                        Used[Table[Indexes[y]][i]] = true;
+                        Paths.Add(Tops[Table[Indexes[y]][i]]);
+                        queue.Enqueue(Tops[Table[Indexes[y]][i]]);
+                    }
+                }
+            }
+        }
+
     }
 }

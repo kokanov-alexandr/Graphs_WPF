@@ -33,6 +33,7 @@ namespace graphs
             btn_delete_connection.IsEnabled = counter_connections > 0;
             BtnGetСColumn.IsEnabled = counter_connections > 0;
             BtnGetMatrix.IsEnabled = counter_connections > 0;
+            DFS.IsEnabled = counter_tops > 0;
             BFS.IsEnabled = counter_tops > 0;
             DeleteAll.IsEnabled = counter_tops > 0;
         }
@@ -43,7 +44,7 @@ namespace graphs
             {
                 Point upPoint = e.GetPosition(grid);
                 if (upPoint.X < Constants.MenuBorder || upPoint.X > grid.ActualWidth ||
-                   upPoint.Y < 0 || upPoint.Y > grid.ActualHeight || upPoint.X > Constants.HelpButtonBorderX && upPoint.Y > Constants.HelpButtonBorderY)
+                   upPoint.Y < 0 || upPoint.Y > grid.ActualHeight)
                     return;
 
                 Button NewTop =  CreateMyElements.CreateButton(new Point(upPoint.X - Constants.TopSize / 2, upPoint.Y - Constants.TopSize / 2));
@@ -90,10 +91,16 @@ namespace graphs
                 
             else if (controler.IsDFSBtnClick == Controller.State.Active)
             {
-                controler.IsDFSBtnClick = Controller.State.Inactive;
-                graph.InitBaseDFS();
+                controler.ClearInfo();
                 graph.Dfs(sender as Button);
                 timer.Start();  
+            }
+
+            else if (controler.IsBFSBtnClick == Controller.State.Active)
+            {
+                controler.ClearInfo();
+                graph.Bfs(sender as Button);
+                timer.Start();
             }
             else
             {
@@ -143,6 +150,12 @@ namespace graphs
         private void BtnAddConnectionClick(object sender, RoutedEventArgs e) =>
             controler.CheckStatus(ref controler.IsBtnAddConnectionClick, sender as Button);
 
+        private void DFSClick(object sender, RoutedEventArgs e) =>
+            controler.CheckStatus(ref controler.IsDFSBtnClick, sender as Button);
+
+        private void BFSClick(object sender, RoutedEventArgs e) =>
+            controler.CheckStatus(ref controler.IsBFSBtnClick, sender as Button);
+
 
         private void BtnGetMatrixClick(object sender, RoutedEventArgs e)
         {
@@ -160,22 +173,6 @@ namespace graphs
             MessageBoxResult result = MessageBox.Show(column_string, "Скопировать в буфер обмена?", MessageBoxButton.YesNo);
             if (result == MessageBoxResult.Yes)
                 Clipboard.SetText(column_string);
-        }
-
-        private void DFSClick(object sender, RoutedEventArgs e)
-        {
-            controler.ClearInfo();
-            controler.IsDFSBtnClick = Controller.State.Active;
-        }
-
-        private void HelpClick(object sender, RoutedEventArgs e)
-        {
-            Help help_win = new Help
-            {
-                Owner = this,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            };
-            help_win.Show();
         }
 
         private void DeleteAllClick(object sender, RoutedEventArgs e)

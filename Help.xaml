@@ -7,10 +7,12 @@
         mc:Ignorable="d"
         Title="Help" Height="350" Width="600" Background="#FFAE35D2" ResizeMode="CanMinimize">
     <Grid Height="350" Width="600">
-        <Button x:Name="Questions" Content="Есть вопросы?"   Foreground="#DD111010" Margin="453,245,47,65" Background="#FFB7AB3A" BorderBrush="#FFB7AB3A" Width="100" Height="40" FontSize="10" Click="Questions_Button_Click"/>
-        <Button x:Name="OK" Content="Окей"  Foreground="#DD111010" Margin="45,245,47,49" Background="#FF33A61E" BorderBrush="#FFB7AB3A" Width="100" Height="40" FontSize="10" Click="OK_Button_Click" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <TextBox  ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"  TextWrapping="Wrap" BorderBrush="Brown"
-                  Text= "Чтобы создать вершину нажмите соответствующую кнопку и затем кликните мышкой в удобном месте.&#xA; &#xA;Если вы хотите удалить вершину, нажмите соответствующую кнопку и кликните на желаемую вершину.&#xA; &#xA;Если вы хотите создать связь между вершинами, нажмите соответствующую кнопку и кликните на две вершины, между которыми хотите создать связь. Удаление связей происходит аналогично.&#xA; &#xA;При клике на вершину левой кнопкой мыши её значение увеличивается на 1, при двойном клике - на 10. При нажатиии правой кнопки мыши значение уменьшается на 1 и 10 соответственно.&#xA; &#xA;Если вы хотите совершить обход графа с какой-либо вершины, нажмите соответствующую кнопку, а зачем кликните на вершину, с которой вы хотите начать обход.&#xA; &#xA;Также вы можете посмотреть матрицу смежности или столбец смежности, нажав на соответствующую кнопку, и по желанию скопировать содержимое в буфер обмена" FontSize="12" Margin="45,10,47,110" Cursor="Arrow"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="7*"/>
+            <ColumnDefinition Width="113*"/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="Questions" Content="Есть вопросы?"   Foreground="#DD111010" Margin="418,245,47,65" Background="#FFB7AB3A" BorderBrush="#FFB7AB3A" Width="100" Height="40" FontSize="10" Click="Questions_Button_Click" Grid.Column="1"/>
+        <Button x:Name="OK" Content="Окей"  Foreground="#DD111010" Margin="10,245,0,0" Background="#FF33A61E" BorderBrush="#FFB7AB3A" Width="100" Height="40" FontSize="10" Click="OK_Button_Click" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"/>
 
     </Grid>
 </Window>

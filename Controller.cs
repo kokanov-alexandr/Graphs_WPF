@@ -11,6 +11,7 @@ namespace graphs
         public State IsBtnDeleteConnectionClick;
         public State IsBtnAddConnectionClick;
         public State IsDFSBtnClick;
+        public State IsBFSBtnClick;
 
         public Controller()
         {
@@ -19,6 +20,7 @@ namespace graphs
             IsBtnDeleteConnectionClick = State.Inactive;
             IsBtnAddConnectionClick = State.Inactive;
             IsDFSBtnClick = State.Inactive;
+            IsBFSBtnClick = State.Inactive;
         }
 
         public void ClearInfo()
@@ -28,12 +30,15 @@ namespace graphs
             IsBtnDeleteConnectionClick = State.Inactive;
             IsBtnAddConnectionClick = State.Inactive;
             IsDFSBtnClick = State.Inactive;
+            IsBFSBtnClick = State.Inactive;
 
             var win = ((MainWindow)System.Windows.Application.Current.MainWindow);
             win.btn_add_top.BorderBrush = win.btn_add_top.Background;
             win.btn_delete_top.BorderBrush = win.btn_delete_top.Background;
             win.btn_add_connection.BorderBrush = win.btn_add_connection.Background;
             win.btn_delete_connection.BorderBrush = win.btn_delete_connection.Background;
+            win.DFS.BorderBrush = win.DFS.Background;
+            win.BFS.BorderBrush = win.BFS.Background;
         }
 
         public void CheckStatus(ref State state, Button button)

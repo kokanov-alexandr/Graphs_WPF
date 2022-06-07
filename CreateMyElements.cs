@@ -7,7 +7,6 @@ namespace graphs
 {
     public static class CreateMyElements
     {
-
         public static Button CreateButton(Point cords)
         {
             var MyWin = ((MainWindow)Application.Current.MainWindow);
@@ -25,6 +24,7 @@ namespace graphs
                 FontStretch = new FontStretch(),
                 Style = (Style)MyWin.Resources["ForRadius"]
             };
+            Panel.SetZIndex(button, 1);
             return button;
         }
 
@@ -32,14 +32,15 @@ namespace graphs
         {
             Ellipse ellipse = new Ellipse
             {
-                Width = 50,
-                Height = 40,
+                Width = Constants.EllipseWidth,
+                Height = Constants.EllipseHeight,
                 Stroke = new SolidColorBrush(Colors.Black),
                 StrokeThickness = Constants.LineThickness,
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Margin = new Thickness(cords.X, cords.Y, 0, 0)
             };
+            Panel.SetZIndex(ellipse, 0);
             return ellipse;
         }
 
@@ -54,6 +55,7 @@ namespace graphs
                 StrokeThickness = Constants.LineThickness,
                 Stroke = Brushes.Black,
             };
+            Panel.SetZIndex(line, 0); 
             return line;
         }
     }
