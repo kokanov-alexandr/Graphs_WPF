@@ -23,3 +23,5 @@ C:\Users\HP\source\repos\graphs\graphs\obj\Debug\App.baml
 C:\Users\HP\source\repos\graphs\graphs\obj\Debug\graphs.csproj.CopyComplete
 C:\Users\HP\source\repos\graphs\graphs\obj\Debug\Help.g.cs
 C:\Users\HP\source\repos\graphs\graphs\obj\Debug\Help.baml
+C:\Users\HP\source\repos\Graphs_WPF\obj\Debug\graphs.exe
+C:\Users\HP\source\repos\Graphs_WPF\obj\Debug\graphs.pdb
